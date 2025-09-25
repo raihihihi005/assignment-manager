@@ -178,3 +178,38 @@ button.delete {
     padding: 8px 12px;
   }
 }
+@media screen and (max-width: 600px) {
+  #searchBox {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #searchInput {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  #filterExpired {
+    margin-bottom: 10px;
+  }
+
+  #filterButton {
+    width: 100%;
+  }
+}
+#searchBox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 20px;
+    line-height: 1.2;
+    text-align: center;
+    margin-bottom: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
