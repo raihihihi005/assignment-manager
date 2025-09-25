@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>課題管理ツール</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>📚 高校生の課題管理ツール</h1>
+
+  <form id="taskForm">
+    <input type="text" id="title" placeholder="課題名" required />
+    <div class="input-group">
+      <label for="deadline">締切日</label>
+      <input type="date" id="deadline" required />
+    </div>
+    <div class="input-group">
+      <label for="subject">教科</label>
+      <input list="subjectList" id="subject" required />
+      <datalist id="subjectList">
+      <option value="数学">
+      <option value="英語">
+      </datalist>
+    </div>
+    <button type="submit">追加</button>
+  </form>
+  <div id="searchBox">
+  <input type="text" id="searchInput" placeholder="課題名または教科で検索" />
+  <label>
+    <input type="checkbox" id="filterExpired" />
+    期限切れのみ表示
+  </label>
+  <button id="filterButton">絞り込み</button>
+  </div>
+
+  <ul id="taskList"></ul>
+
+  <script src="script.js"></script>
+</body>
+</html>
