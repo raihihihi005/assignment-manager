@@ -12,10 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   .then(() => {
     const uid = firebase.auth().currentUser.uid;
     console.log("Anonymous UID:", uid);
-    // このUIDを使ってFirestoreに保存
-  })
-  .catch((error) => {
-    console.error("Anonymous login failed:", error);
+    loadTasks(); // ← ここで初回表示
   });
 
   function saveTask(task) {
@@ -30,9 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const uid = firebase.auth().currentUser.uid;
   db.collection("users").doc(uid).collection("tasks").get()
     .then((querySnapshot) => {
+      const tasks = [];
       querySnapshot.forEach((doc) => {
-        console.log(doc.id, "=>", doc.data());
+        tasks.push(doc.data());
       });
+      renderTasks(tasks);
     });
   }
 
@@ -48,16 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTasks();
   });
 
-  function saveTask(task) {
-    const tasks = getTasks();
-    tasks.push(task);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }
-
-  function getTasks() {
-    return JSON.parse(localStorage.getItem("tasks")) || [];
-  }
-
   function addSubjectOption(subject) {
   const subjectList = document.getElementById("subjectList");
   const options = Array.from(subjectList.options).map(opt => opt.value.toLowerCase());
@@ -69,21 +58,21 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
   function deleteTask(taskToDelete) {
-  const tasks = getTasks();
+  
   const updatedTasks = tasks.filter(task =>
     !(task.title === taskToDelete.title &&
       task.deadline === taskToDelete.deadline &&
       task.subject === taskToDelete.subject)
   );
-  localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  
   renderTasks();
 }
 document.getElementById("filterButton").addEventListener("click", renderTasks);
 
 
 
-  function renderTasks() {
-  const tasks = getTasks();
+  function renderTasks(tasks) {
+  
 
   const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
   const showExpiredOnly = document.getElementById("filterExpired").checked;
