@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const uid = firebase.auth().currentUser.uid;
   db.collection("users").doc(uid).collection("tasks").add(task)
     .then((docRef) => {
-      console.log("Task saved with ID:", docRef.id);
+      loadTasks();
     });
   } 
 
@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
       querySnapshot.forEach((doc) => {
         tasks.push(doc.data());
       });
-      renderTasks(tasks);
+      renderTasks(tasks); // ← 必ず引数を渡す
     });
-  }
+}
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const task = { title, deadline, subject };
     saveTask(task);
     form.reset();
-    renderTasks();
   });
 
   function addSubjectOption(subject) {
@@ -58,14 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
   function deleteTask(taskToDelete) {
-  
-  const updatedTasks = tasks.filter(task =>
-    !(task.title === taskToDelete.title &&
-      task.deadline === taskToDelete.deadline &&
-      task.subject === taskToDelete.subject)
-  );
-  
-  renderTasks();
+  const uid = firebase.auth().currentUser.uid;
+  db.collection("users").doc(uid).collection("tasks")
+    .where("title", "==", taskToDelete.title)
+    .where("deadline", "==", taskToDelete.deadline)
+    .where("subject", "==", taskToDelete.subject)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete();
+      });
+      loadTasks(); // 削除後に再表示
+    });
 }
 document.getElementById("filterButton").addEventListener("click", renderTasks);
 
@@ -150,5 +153,4 @@ document.getElementById("filterButton").addEventListener("click", renderTasks);
     taskList.appendChild(li);
   });
 }
-  renderTasks();
 });
