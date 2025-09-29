@@ -46,35 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 document.getElementById("filterButton").addEventListener("click", renderTasks);
 
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
 
-function saveTask(task) {
-  db.collection("tasks").add(task)
-    .then((docRef) => {
-      console.log("Task saved with ID: ", docRef.id);
-    })
-    .catch((error) => {
-      console.error("Error adding task: ", error);
-    });
-}
-
-function loadTasks() {
-  db.collection("tasks").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
-    });
-  });
-}
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 
   function renderTasks() {
   const tasks = getTasks();
