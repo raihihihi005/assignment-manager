@@ -1,6 +1,40 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("taskForm");
   const taskList = document.getElementById("taskList");
+  const firebaseConfig = {
+  // あなたのFirebaseプロジェクトの設定情報
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  firebase.auth().signInAnonymously()
+  .then(() => {
+    const uid = firebase.auth().currentUser.uid;
+    console.log("Anonymous UID:", uid);
+    // このUIDを使ってFirestoreに保存
+  })
+  .catch((error) => {
+    console.error("Anonymous login failed:", error);
+  });
+
+  function saveTask(task) {
+  const uid = firebase.auth().currentUser.uid;
+  db.collection("users").doc(uid).collection("tasks").add(task)
+    .then((docRef) => {
+      console.log("Task saved with ID:", docRef.id);
+    });
+  } 
+
+  function loadTasks() {
+  const uid = firebase.auth().currentUser.uid;
+  db.collection("users").doc(uid).collection("tasks").get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, "=>", doc.data());
+      });
+    });
+  }
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
