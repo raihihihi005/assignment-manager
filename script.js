@@ -10,9 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   firebase.auth().signInAnonymously()
   .then(() => {
-    const uid = firebase.auth().currentUser.uid;
-    console.log("Anonymous UID:", uid);
-    loadTasks(); // ← ここで初回表示
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log("Anonymous UID:", user.uid);
+        loadTasks();
+      }
+    });
   });
 
   function saveTask(task) {
@@ -70,8 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
       loadTasks(); // 削除後に再表示
     });
 }
-document.getElementById("filterButton").addEventListener("click", renderTasks);
 
+document.getElementById("filterButton").addEventListener("click", () => {
+  loadTasks(); // ← tasksを取得してからrenderTasksに渡す
+});
 
 
   function renderTasks(tasks) {
